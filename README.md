@@ -1,6 +1,8 @@
 # Symbol-Crush-Saga
 Console twist on Candy Crush Saga
 
+C++ code written by Garrett Brumley 
+
 Written Spring 2016 for CSCE 1030, Beginning Computer Science I
 
 This program will randomly initialize your game board using a set of 6 
