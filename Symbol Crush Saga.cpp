@@ -15,10 +15,12 @@
 #include <string>
 using namespace std;
 
-const int SIZE = 9; //declare constant for the size of the array
-enum Symbols {EXCLAMATION_POINT = 33, DOUBLE_QUOTES, HASHTAG, DOLLAR_SIGN, PERCENTAGE, AMPERSAND}; //Declare enumeration for the array
-typedef Symbols* SymbolsPtr; // Create a type for the enum pointer.
-struct Data // Declare struct
+const int SIZE = 9; // constant for the size of the array
+enum Symbols {EXCLAMATION_POINT = 33, DOUBLE_QUOTES, HASHTAG, DOLLAR_SIGN, PERCENTAGE, AMPERSAND}; 
+typedef Symbols* SymbolsPtr; 
+
+// Holds data for the game
+struct Data 
 {	
 	int moves;
 	int score;
@@ -37,29 +39,28 @@ void move(SymbolsPtr *board, Data& GameData);
 
 int main()
 {
-	Data GameData; // Declare variable GameData of the struct type Data
+	Data GameData; 
+	GameData.moves = 0; 
+	GameData.score = 0; 
+	SymbolsPtr *board = new SymbolsPtr[SIZE]; .
 
-	GameData.moves = 0; //Initialize number of moves
-	GameData.score = 0; //Initialize score
-
-	SymbolsPtr *board = new SymbolsPtr[SIZE]; //Declare a pointer of the IntPntr type.
-
-	for(int i = 0; i < SIZE; i++) //Initialize dynamic array for the gameboard
+	//Initialize dynamic array for the gameboard
+	for(int i = 0; i < SIZE; i++) 
 	{
 		board[i] = new Symbols[SIZE];
 	}
 	
-	printinfo(); // Call the print info function
-
-	initialize_board(board); // Call function to initialize board
+	printinfo(); 
+	initialize_board(board); 
 
 	cout << "Initializing board..." << endl << endl;
 
-	for (int i = 0; i < 10; i++) //Sets number of moves to 10 and begins the game
+	//Set 10 moves for game length and plays game
+	for (int i = 0; i < 10; i++) 
 	{	
-		print_board(board); // call print_board function to print the gameboard
+		print_board(board); 
 
-		cout << "   Moves:  " << GameData.moves << " Score:  " << GameData.score << endl; // Displays moves and score
+		cout << "   Moves:  " << GameData.moves << " Score:  " << GameData.score << endl; 
 
 		move(board, GameData); // Function that parses user inputted moves
 				
@@ -84,6 +85,7 @@ int main()
 
 	return 0; // End program
 }
+
 /*
 =========================================================================================
 Function: printinfo
@@ -94,7 +96,6 @@ Description: This function prints my class info and game info
 */
 void printinfo()
 {
-	//Prints my information.
 	cout << "    +------------------------------------------------+\n"
 	     << "    |       Computer Science and Engineering         |\n"
 	     << "    |        CSCE 1030 - Computer Science I          |\n"
@@ -118,6 +119,7 @@ void printinfo()
 
 	return;
 }
+
 /*
 =========================================================================================
 Function: initialize_board
@@ -129,14 +131,15 @@ Description: This function takes in an Array, then processes it by randomly stor
 */
 void initialize_board(SymbolsPtr *board)
 {
-	srand(time(NULL)); // Seed the RNG	
-	int i, j; // Declare 2 variables, i for vertical size of array, j for horizontal size.
-
-	for(i = 0; i < SIZE; i++)// Controls first variable in array
+	// Seed RNG, i for vertical array, j for horizontal array
+	srand(time(NULL)); 	
+	int i, j; 
+	
+	// Generate a random number between 33 and 38, typecasted as enumeration type of Symbol, then store into the array
+	for(i = 0; i < SIZE; i++)
 	{
-		for(j = 0; j < SIZE; j++) // Controls second variable in array
-		{	
-			// Generate a random number between 33 and 38, typecasted as enumeration type of Symbol, then store into the array
+		for(j = 0; j < SIZE; j++) 
+		{		
 			board[i][j] = static_cast<Symbols>(rand() % 6 + 33); 
 		}	
 	}
@@ -153,27 +156,23 @@ Description: This function prints out the game board using a combination of cout
 */
 void print_board(SymbolsPtr *board)
 {
-	int i, j; // Declare 2 variables, i for vertical size of array, j for horizontal size.
-	char letter;// Declare char letter
-
-	// Print out the board
+	int i, j; 
+	char letter;
 
 	cout << "    1 2 3 4 5 6 7 8 9\n"
 	     << "  +-------------------+\n";
 
 	for(i = 0; i < SIZE; i++)
 	{
-		letter = 'A' + i; // Increase value of each letter for each iteration of the vertical for loop
+		letter = 'A' + i; 
 		cout << letter << setw(2) << "|"; // Left border
 		for(j = 0; j < SIZE; j++)
 		{
 			cout << setw(2) << static_cast<char>(board[i][j]); // Typecast the array into the char type and print to board
 		}
-	
 		cout << setw(2) << "|" << endl;	// Right border
 	}
 	cout << "  +-------------------+\n";
-
 	return;
 }
 /*
@@ -187,50 +186,59 @@ Description: This function calculates the effects of user input on the gameboard
 */
 void move(SymbolsPtr *board, Data& GameData)
 {
-	char d = 0, dir = 0; // d is the function placeholder for GameData.ROW before it is converted into an int, dir is the function placeholder for GameData.direction
-	int i, j, k, n, f = 0, max; // i and j are the function indexes, k holds the constant value of the given array position, n is the counter, f is the function placeholder for GameData.score, max stores the lowest point a vertical match reaches
+	// d holds GameData.ROW, dir holds GameData.direction
+	char d = 0, dir = 0; 
+	// i and j are indexes, k holds the constant value of the given array position, 
+	// n is the counter, f holds local move score, max stores the lowest point a vertical match reaches
+	int i, j, k, n, f = 0, max; 
 
-	coord_check(GameData); // Call the coord_check function
-	
-	if(GameData.ROW == 'R' && GameData.COL == 0) // If user entered R0
+	coord_check(GameData); 
+
+	// If user entered R0, reshuffle board
+	if(GameData.ROW == 'R' && GameData.COL == 0) 
 	{		
-		initialize_board(board); // Reshuffle board
-		return; // Break out of the move() function
+		initialize_board(board); 
+		return;
 	}
-		
+	
+	// Prompt for direction to check
 	do
-	{	//Prompt user to input a direction to check on the gameboard
+	{	
 		cout << "Enter Direction (V = Vertical, H = Horizontal): ";
-		cin >> 	GameData.direction; 
+		cin >> 	GameData.direction; 	
+		dir = GameData.direction; 
 		
-		dir = GameData.direction; // Sets dir equal to the struct directional value to make code cleaner
-		
-		if((dir != 'V') && (dir != 'v') && (dir != 'H') && (dir != 'h')) // Checks to make sure input is valid
+		// Input checking
+		if((dir != 'V') && (dir != 'v') && (dir != 'H') && (dir != 'h')) 
 		{
 			cout << "Invalid entry. Try again... " << endl;
 		}
 
 	}while((dir != 'V') && (dir != 'v') && (dir != 'H') && (dir != 'h'));
 
-	j = GameData.COL; //Sets j equal to the struct column value to make code cleaner
+	j = GameData.COL; 
 
-	i = static_cast<int>(GameData.ROW)-65; //Convert the user entered char into an int value and subtract ASCII value so it can be used as an index
-	j = j - 1; //Subtract one from the user entered integer value to be used as an array.
+	//Convert the user entered char and column into index values
+	i = static_cast<int>(GameData.ROW)-65; 
+	j = j - 1; 
+	
+	// Set k, constant, to the value of the array at initial user inputted index
+	k = board[i][j]; 
 
-	k = board[i][j]; // Set k, constant, to the value of the array at initial user inputted index
-
-	if((dir == 'H') || (dir == 'h')) // If user enters H or h for horizontal
+	// If user enters H or h for horizontal
+	if((dir == 'H') || (dir == 'h')) 
 	{
-		n = 0; // Set counter to 0
-
-		while(board[i][j+n] == k) // Check to see if array value with j + n is equal to the initial user inputted array value
-		{
-			f = f + 1; // Add one to the f, which represents score
-			n++; // Increment counter
+		n = 0; 
+		// Check to see if array value with j + n is equal to the user inputted array value
+		while(board[i][j+n] == k) 
+		{	
+			// Add one to the score, then increment
+			f = f + 1; 
+			n++; 
 		}
 
 		n = 1; // Set counter to 1 to check in other direction
-		while(board[i][j-n] == k)// Check to see if array value with j-+ n is equal to the initial user inputted array value
+		while(board[i][j-n] == k)// Check to see if array value with j - n is equal to the initial user inputted array value
 
 		{
 			f = f + 1; // Add one to f, which represents score
@@ -239,14 +247,16 @@ void move(SymbolsPtr *board, Data& GameData)
 	}
 	else // If user enters v or V for vertical
 	{	
-		n = 0; // Set counter to 0
-
-		if(i !=	8) // If entered value is not on the bottom row of the board
+		n = 0; 	
+		// If entered value is not on the bottom row of the board
+		if(i !=	8) 
 		{ 	
-			while((board[i+n][j] == k))// Check to see if array value with i + n is equal to the initial user inputted array value
+			// Check to see if array value with i + n is equal to the initial user inputted array value
+			while((board[i+n][j] == k))
 			{
-				f = f + 1; // Add one to score
-				n++; // Increment counter
+				// Add one to score, Increment counter
+				f = f + 1; 
+				n++; 
 				
 				if(i+n > 8) // If loop approaches bottom border, break out of loop to avoid segmentation fault
 				{
@@ -267,8 +277,8 @@ void move(SymbolsPtr *board, Data& GameData)
 
 			while((board[i-n][j] == k)) // Check to see if array value with i - n is equal to the initial user inputted array value
 			{	
-				f = f + 1; // Add one to score
-				n++; // Increment counter
+				f = f + 1; // Add one to score, Increment counter
+				n++; 
 
 				if(i-n < 0) // If loop approaches top border, break out of loop to avoid segmentation fault
 				{
@@ -281,81 +291,93 @@ void move(SymbolsPtr *board, Data& GameData)
 	//Check to see if 3 of a kind has been matched
 	if(f >= 3)
 	{	
-		GameData.score = GameData.score + f; // Add one to the struct total score
+		GameData.score = GameData.score + f; // Add points to the global score
 		
 		cout << "Good job! You gained +" << f << " points!" << endl;
 	
-// EXTRA CREDIT SPOT: THE VALUES ARE SHIFTED DOWN THE COLUMNS INSTEAD OF RANDOMLY IN THE SPOT THE MATCH WAS MADE
+		// EXTRA CREDIT SPOT: THE VALUES ARE SHIFTED DOWN THE COLUMNS INSTEAD OF RANDOMLY IN THE SPOT THE MATCH WAS MADE
 
 		if((dir == 'H') || (dir == 'h')) // For if the user chose to match a horizontal direction
 		{
-			n = 0; // Set counter to 0
+			n = 0; 
 
 			while(board[i][j+n] == k) // Check to see if array value with j + n is equal to the initial user inputted array value
 			{
+				// Sets each array equal to the one above it and continue this trend to the top of the board
 				while(i > 0)
 				{
-					board[i][j+n] = board[i-1][j+n]; // Sets each array equal to the one above it and continue this trend to the top of the board
-					i--; // Decrements i
+					board[i][j+n] = board[i-1][j+n]; 
+					i--; 
 				}
-				board[0][j+n] = static_cast<Symbols>(rand() % 6 + 33); // Create a new random symbol at the top of the board
-				
-				i = static_cast<int>(GameData.ROW)-65; //Resets i value
-				
-				n++; // Increment counter
+			
+				// Create a new random symbol at the top of the board
+				board[0][j+n] = static_cast<Symbols>(rand() % 6 + 33); 
+				i = static_cast<int>(GameData.ROW)-65; 
+				n++; 
 			}
 
 			i = static_cast<int>(GameData.ROW)-65; //Resets i value
 			
 			n = 1; // Set counter to 1
-			while(board[i][j-n] == k)// Check to see if array value with j - n is equal to the initial user inputted array value
+			
+			// Check to see if array value with j - n is equal to the initial user inputted array value
+			while(board[i][j-n] == k)
 			{
+				// Sets each array equal to the one above it and continue this trend to the top of the board
 				while(i > 0)
 				{
-					board[i][j-n] = board[i-1][j-n]; // Sets each array equal to the one above it and continue this trend to the top of the board
-					i--; // Decrements i
+					board[i][j-n] = board[i-1][j-n]; 
+					i--; 
 				}
-				board[0][j-n] = static_cast<Symbols>(rand() % 6 + 33); // Create a new random symbol in place of one of the matched ones
-				
-				i = static_cast<int>(GameData.ROW)-65; //Resets i value
-
-				n++; // Increment counter
+			
+				// Create a new random symbol in place of one of the matched ones
+				board[0][j-n] = static_cast<Symbols>(rand() % 6 + 33); 
+				i = static_cast<int>(GameData.ROW)-65; 
+				n++; 
 			}
 		}
 		else
 		{	
-			n = 0; // Set counter to 0
-			if(i !=	8) // If the inputted value is on the bottom of the board
+			n = 0; 
+			// If the inputted value is on the bottom of the board
+			if(i !=	8) 
 			{
-				while((board[i+n][j] == k))// Check to see if array value with i + n is equal to the initial user inputted array value
+				// Check to see if array value with i + n is equal to the initial user inputted array value
+				while((board[i+n][j] == k))
 				{
-					if(i+n-f < 0) // If a value to be "dropped down" is off the board, randomize the position instead
+					// If a value to be "dropped down" is off the board, randomize the position instead
+					if(i+n-f < 0) 
 					{
 						board[i+n][j] = static_cast<Symbols>(rand() % 6 + 33);
 					}
-					else // The vslue of the given array is set to the value of the one "f" spaces above it
+					else // The value of the given array is set to the value of the one "f" spaces above it, then randomized
 					{
 						board[i+n][j] = board[i+n-f][j];
-						board[i+n-f][j] = static_cast<Symbols>(rand() % 6 + 33);// Then randomized
+						board[i+n-f][j] = static_cast<Symbols>(rand() % 6 + 33);
 					}					
-					n++;// Increment counter
-					
-					if(i+n > 8) // break loop if index would exceed max array value
+					n++;
+			
+					// break loop if index would exceed max array value
+					if(i+n > 8) 
 					{
 						break;
 					}
 				}
 			}
 
-			n = 1; // Set counter to 1
-			if(i != 0) // If the inputted value is not at the top of the board
+			n = 1;
+			
+			// If the inputted value is not at the top of the board
+			if(i != 0) 
 			{
-				if(i == 8) // If the inputted value is at the bottom of the board
+				// If the inputted value is at the bottom of the board, set counter to 0 instead
+				if(i == 8) 
 				{
-					n = 0; // Set counter to 0 instead
+					n = 0; 
 				}
 
-				while(n < (max-f)) //Continue looping while the counter is less than the lowest space achieved by the given match subtracted by the length of the match
+				//Continue looping while the counter is less than the lowest space achieved by the given match subtracted by the length of the match
+				while(n < (max-f)) 
 				{	
 					if(i-n-f < 0)
 					{
@@ -366,7 +388,7 @@ void move(SymbolsPtr *board, Data& GameData)
 						board[i-n][j] = board[i-n-f][j];
 						board[i-n-f][j] = static_cast<Symbols>(rand() % 6 + 33); // Then randomize
 					}
-					n++; // Increment counter
+					n++; 
 
 					if(i-n < 0) // If loop approaches top border, break out of loop to avoid segmentation fault
 					{
@@ -381,8 +403,9 @@ void move(SymbolsPtr *board, Data& GameData)
 		cout << "You did not pick a 3 of a kind" << endl;
 	}
 
-	return;	// End function
+	return;	
 }
+
 /*
 =========================================================================================
 Function: coord_check
@@ -395,24 +418,25 @@ Description: This function prompts a user to input a string of 2 coordinates whi
 void coord_check(Data& GameData)
 {
 	
-	int flag = 0; // Declares a flag to check the conditions of the loop
-	string coordinates; // Declares a string for the user to enter their coordinates
+	int flag = 0; // Flag to check the conditions of the loop
+	string coordinates; 
 
 	do
 	{	
 		cout << "Enter location for move #" << GameData.moves + 1 << " (e.g, B7): ";
-		
-		cin >> coordinates; // Input coords
+		cin >> coordinates; 
 
 		GameData.ROW = coordinates[0]; // The row value
 		GameData.COL = coordinates[1] - 48; // The column value, adjusted for conversion
 
-		if(islower(GameData.ROW)) // If a letter is lowercase, convert it to uppercase
+		// If a letter is lowercase, convert it to uppercase
+		if(islower(GameData.ROW)) 
 		{
 			GameData.ROW = toupper(GameData.ROW);
 		}
 
-		if(GameData.ROW == 'R' && GameData.COL == 0) // If user enters R0, reshuffle the board
+		// If user enters R0, reshuffle the board
+		if(GameData.ROW == 'R' && GameData.COL == 0) 
 		{
 			if(GameData.moves < 9)
 			{
@@ -424,7 +448,8 @@ void coord_check(Data& GameData)
 				return;
 			}
 		}
-		else if((GameData.ROW < 'A') || (GameData.ROW > 'I') || (GameData.COL < 1) || (GameData.COL > 9)) // If the coordinates are not within these ranges have them enter a new coordinate
+		// If the coordinates are not within these ranges have them enter a new coordinate
+		else if((GameData.ROW < 'A') || (GameData.ROW > 'I') || (GameData.COL < 1) || (GameData.COL > 9)) 
 		{
 			flag = 1;
 			cout << "You did not enter a valid coordinate. Please try again." << endl;
